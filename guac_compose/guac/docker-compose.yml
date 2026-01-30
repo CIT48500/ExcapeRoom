@@ -1,0 +1,88 @@
+
+version: "3.9"
+
+services:
+  guacd:
+    image: guacamole/guacd:1.5.5
+    container_name: guacd
+    restart: unless-stopped
+    networks:
+      - guacnet
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: guac_postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: guacamole_user
+      POSTGRES_PASSWORD: supersecret_password
+      POSTGRES_DB: guacamole_db
+    volumes:
+      - guac_db:/var/lib/postgresql/data
+      - ./init:/docker-entrypoint-initdb.d
+    networks:
+      - guacnet
+
+  guacamole:
+    image: guacamole/guacamole:1.5.5
+    container_name: guacamole
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      GUACD_HOSTNAME: guacd
+
+      # ✅ Use the correct variable names:
+      POSTGRESQL_HOSTNAME: postgres
+      POSTGRESQL_DATABASE: guacamole_db
+      POSTGRESQL_USER: guacamole_user
+      POSTGRESQL_PASSWORD: supersecret_password
+      
+      REMEMBER_ME_ENABLED: "true"
+      REMEMBER_ME_DURATION: "86400"   # seconds (24 hours)
+    depends_on:
+      - guacd
+      - postgres
+    networks:
+      - guacnet
+      
+  ubuntu_desktop:
+    image: dorowu/ubuntu-desktop-lxde-vnc
+    container_name: ubuntu_desktop # use this in guac for hostname
+    environment:
+      - RESOLUTION=1920x1080
+    volumes:
+      - /dev/shm:/dev/shm
+    ports:
+      - "8081:80"   # web port
+      - "5900:5900" # this is for vnc port
+    networks:
+      - guacnet
+      
+  kali_ssh:
+    image: kali-ssh # built from our Dockerfile
+    container_name: kali_ssh # use this in guac for hostname
+    restart: unless-stopped
+    networks:
+      - guacnet
+      
+    # in our Dockerfile, we expose port 22 for the ssh connection
+    # so we don't have to specify it here as the image automatically sets up ssh on port 22
+
+  kali_rdp:
+    image: kali-rdp # docker file
+    container_name: kail_rdp
+    restart: unless-stopped
+    shm_size: "1gb"
+    networks:
+      - guacnet
+      
+    # we need to restart the xrdp here at the entrypoint to ensure that the new settings would actually apply.
+    entrypoint: ["bash", "-c", "service xrdp restart && tail -f /dev/null"] # REQUIRED TO START THE GUI
+
+
+networks:
+  guacnet:
+
+volumes:
+  guac_db:

@@ -1,0 +1,9 @@
+# build kali image in kali-ssh
+docker build --no-cache -t kali-ssh .
+
+# build kali rdp image in kali-rdp
+docker build --no-cache -t kali-rdp .
+
+# setting up guac with containers
+docker compose up
+docker compose down
