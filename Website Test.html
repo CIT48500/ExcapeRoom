@@ -6,12 +6,12 @@
     <style>
         body {
             margin: 0;
-            margin-top: 120px;
+            margin-top: 250px;
             height: 25vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            background-image: url("https://cdn.dribbble.com/userupload/21809633/file/original-cc4d04ae40051f7dc7ec985b74b5a19b.gif");
+            background-image: url("https://i.pinimg.com/originals/1d/30/b5/1d30b5a0c298c02edaf2f501b22a6587.gif");
             background-size: cover;
             background-repeat: no-repeat;
             background-position: center;
@@ -19,6 +19,7 @@
             background-color: #111;
             color: #fff;
             font-family: Verdana, sans-serif;
+            transition: background-image 0.3s ease, background-color 0.3s ease;
         }
 
         .container {
@@ -30,33 +31,95 @@
             margin-bottom: 20px;
         }
 
+        /* Default button (START) */
         button {
             font-size: 1.8rem;
             font-weight: bold;
-            margin-top: 145px;
-            padding: 25px 100px;
+            margin-top: 100px;
+            padding: 60px 90px;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            background-color: #e63946;
+            background-color: #4aa4fd;
             color: white;
             transition: background-color 0.3s;
         }
 
         button:hover {
-            background-color: #c62828;
+            background-color: #8cc6ff;
+        }
+
+        /* INFO + BACK buttons */
+        .info-btn {
+            background-color: #888888;
+            padding: 40px;
+            margin-top: 25px;
+        }
+
+        .info-btn:hover {
+            background-color: #b5b5b5; /* lighter gray on hover */
+        }
+
+        /* Info screen (hidden by default) */
+        #infoScreen {
+            display: none;
+            text-align: center;
+        }
+
+        #infoText {
+            font-size: 1.5rem;
+            margin-bottom: 40px;
+            max-width: 700px;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>CIT 48500 - Escape Room!!</h1>
-        <button onclick="startGame()">Begin</button>
+
+        <!-- Main Menu -->
+        <div id="mainMenu">
+            <h1 style="font-size: 3.5rem;">CIT 48500 - Escape Room</h1>
+            <button onclick="startGame()" style="font-size: 2.2rem; border: 10px solid white;">START</button><br>
+            <button class="info-btn" onclick="showInfo()" style="border: 10px solid white; padding-top: 20px; padding-bottom: 20px;">INFO</button>
+        </div>
+
+        <!-- Info Screen -->
+        <div id="infoScreen">
+            <div id="infoText">
+                <p style="margin-top: 70px;">
+                    Welcome to the CIT 48500 Escape Room!<br><br>
+                    This is where we will put our information.
+                </p>
+            </div>
+            <button class="info-btn" onclick="hideInfo()" style="margin-top: 150px; border: 10px solid white; padding-top: 20px; padding-bottom: 20px;">BACK</button>
+        </div>
     </div>
 
     <script>
+        const originalBackground =
+            'url("https://i.pinimg.com/originals/1d/30/b5/1d30b5a0c298c02edaf2f501b22a6587.gif")';
+
+        /* TEMPLATE: Replace this URL later */
+        const infoBackground =
+            'url("https://www.shutterstock.com/image-photo/futuristic-digital-network-glowing-blue-600nw-2662126927.jpg")';
+
         function startGame() {
-            alert("Gerbil");
+            alert("This is when guaccy should activate");
+        }
+
+        function showInfo() {
+            document.getElementById("mainMenu").style.display = "none";
+            document.getElementById("infoScreen").style.display = "block";
+
+            document.body.style.backgroundImage = infoBackground;
+        }
+
+        function hideInfo() {
+            document.getElementById("infoScreen").style.display = "none";
+            document.getElementById("mainMenu").style.display = "block";
+
+            document.body.style.backgroundImage = originalBackground;
+            document.body.style.backgroundColor = "#111";
         }
     </script>
 </body>
